@@ -4,17 +4,17 @@
 typedef struct dll_node_t dll_node_t;
 struct dll_node_t
 {
-    void* data; /* Pentru ca datele stocate sa poata avea orice tip, folosim un
-                   pointer la void. */
-    dll_node_t *prev, *next;
+	void *data; /* Pentru ca datele stocate sa poata avea orice tip, folosim un
+				   pointer la void. */
+	dll_node_t *prev, *next;
 };
 
 typedef struct doubly_linked_list_t doubly_linked_list_t;
 struct doubly_linked_list_t
 {
-    dll_node_t* head;
-    unsigned int data_size;
-    unsigned int size;
+	dll_node_t* head;
+	unsigned int data_size;
+	unsigned int size;
 };
 
 /*
@@ -81,5 +81,7 @@ dll_check_if_palindrome(doubly_linked_list_t *list);
 
 doubly_linked_list_t
 *dll_add_sum_of_two_nums(doubly_linked_list_t *list, doubly_linked_list_t *secondlist);
+
+dll_node_t *create_node(const void *new_data, uint data_size);
 
 #endif /* __CIRCULAR_DOUBLY_LINKED_LIST_H_*/

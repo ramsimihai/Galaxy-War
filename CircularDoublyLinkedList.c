@@ -8,7 +8,7 @@
 typedef unsigned int uint;
 
 /* create a node with a given data and its size */
-static dll_node_t *create_node(const void *new_data, uint data_size)
+dll_node_t *create_node(const void *new_data, uint data_size)
 {
 	dll_node_t *node;
 
