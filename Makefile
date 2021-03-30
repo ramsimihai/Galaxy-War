@@ -2,21 +2,25 @@ CC=clang
 CFLAGS=-Wall -Wextra
 DEBUG=-g -ggdb -O0 -march=native
 
-build: TestCircularDoublyLinkedList
+build: galactic_war
 
-TestCircularDoublyLinkedList: src/TestCircularDoublyLinkedList.o src/CircularDoublyLinkedList.o
-	$(CC) $(CFLAGS) $(DEBUG) src/TestCircularDoublyLinkedList.o src/CircularDoublyLinkedList.o -o TestCircularDoublyLinkedList
+galactic_war: ./galactic_war.o ./CircularDoublyLinkedList.o
+	$(CC) $(CFLAGS) $(DEBUG) ./galactic_war.o ./CircularDoublyLinkedList.o -o galactic_war
 
-src/CircularDoublyLinkedList.o: src/CircularDoublyLinkedList.h src/CircularDoublyLinkedList.c
-	$(CC) $(CFLAGS) $(DEBUG) src/CircularDoublyLinkedList.c -c -o src/CircularDoublyLinkedList.o
+./CircularDoublyLinkedList.o: ./CircularDoublyLinkedList.h ./CircularDoublyLinkedList.c
+	$(CC) $(CFLAGS) $(DEBUG) ./CircularDoublyLinkedList.c -c -o ./CircularDoublyLinkedList.o
 
-src/TestCircularDoublyLinkedList.o: src/TestCircularDoublyLinkedList.c
-	$(CC) $(CFLAGS) $(DEBUG) src/TestCircularDoublyLinkedList.c -c -o src/TestCircularDoublyLinkedList.o
+./galactic_war.o: ./galactic_war.c
+	$(CC) $(CFLAGS) $(DEBUG) ./galactic_war.c -c -o ./galactic_war.o
+
+./galactic_war.o: ./galactic_war.c
+	$(CC) $(CFLAGS) $(DEBUG) ./galactic_war.c -c -o ./galactic_war.o
+
 
 run:
 	./TestCircularDoublyLinkedList
 
 clean:
-	rm src/*.o
+	rm ./*.o
 	rm TestCircularDoublyLinkedList
 

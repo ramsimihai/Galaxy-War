@@ -21,12 +21,5 @@
         }                                                                      \
     } while (0)
 
-int min_int(int a, int b)
-{
-        if (a > b)
-                return b;
-
-        return a;
-}
 
 #endif /* __UTILS_H_ */
