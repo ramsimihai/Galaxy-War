@@ -7,7 +7,7 @@
 #include "galactic_war_utils.h"
 
 #define MAX_STRING_SIZE 256
-#define ONE 1
+#define MIN_SHIELDS 4
 
 char *strdup(const char *src) {
     char *dst = malloc(strlen (src) + 1);  // Space for length plus nul
@@ -52,12 +52,11 @@ void black_hole(doubly_linked_list_t *planets)
 	uint index;
 	dll_node_t *removed;
 
+	fscanf(stdin, "%d", &index);
 	if (index > planets->size) {
 		fprintf(stdout, "Planet out of bounds!\n");
 		return;
 	}
-
-	fscanf(stdin, "%d", &index);
 
 	removed = dll_remove_nth_node(planets, index);
 	fprintf(stdout, "The planet %s has been eaten by the vortex!\n", ((planet_t *)removed->data)->name);
@@ -72,7 +71,7 @@ void show_planet(doubly_linked_list_t *planets)
 	dll_node_t *curr, *curr_shields;
 	scanf("%d", &index);
 
-	if (!planets) {
+	if (!planets->size) {
 		fprintf(stdout, "There is no planet in galaxy.\n");
 		return;
 	}
@@ -110,9 +109,9 @@ void upgrade_shields_of_planet(doubly_linked_list_t *planets)
 	}
 
 	curr_planet = dll_get_nth_node(planets, idx_planet);
-
-	if (idx_shield >= ((planet_t *)curr_planet)->shields->size) {
-		fprintf(stdout, "Planet out of bonds\n");
+	
+	if (idx_shield >= ((planet_t *)curr_planet->data)->shields->size) {
+		printf("Shield out of bonds\n");
 		return;
 	}
 
@@ -145,6 +144,43 @@ void exp_planet(doubly_linked_list_t *planets)
 	first_shield->prev = new_shield;
 
 	((planet_t *)curr_planet->data)->shields->size++;
+}
+
+void remove_shield(doubly_linked_list_t *planets)
+{
+	uint idx_planet, idx_shield;
+	dll_node_t *curr_planet, *curr_shield;
+
+	fscanf(stdin, "%d%d", &idx_planet, &idx_shield);
+
+	if (idx_planet > planets->size) {
+		fprintf(stdout, "Planet out of bonds!\n");
+		return;
+	}
+
+	curr_planet = dll_get_nth_node(planets, idx_planet);
+
+	if (idx_shield >= ((planet_t *)curr_planet->data)->shields->size) {
+		fprintf(stdout, "Shield out of bonds!\n");
+		return;
+	}
+
+	curr_shield = dll_get_nth_node(((planet_t *) curr_planet->data)->shields, idx_shield);
+
+	if (idx_shield >= ((planet_t *) curr_planet->data)->shields->size) {
+		fprintf(stdout, "Shield out of bonds!\n");
+		return;
+	}
+
+	if (((planet_t *) curr_planet->data)->shields->size <= MIN_SHIELDS) {
+		fprintf(stdout, "A planet cannot have less than 4 shields!\n");
+		return ;
+	}
+
+	curr_shield = dll_remove_nth_node(((planet_t *) curr_planet->data)->shields, idx_shield);
+	free(curr_shield->data);
+	free(curr_shield);
+
 }
 
 void destroy_galaxy(doubly_linked_list_t **planets)

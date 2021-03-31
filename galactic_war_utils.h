@@ -21,6 +21,8 @@ void upgrade_shields_of_planet(doubly_linked_list_t *planets);
 
 void exp_planet(doubly_linked_list_t *planets);
 
+void remove_shield(doubly_linked_list_t *planets);
+
 void destroy_galaxy(doubly_linked_list_t **planets);
 
 #endif

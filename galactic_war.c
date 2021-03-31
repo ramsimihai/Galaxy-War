@@ -33,7 +33,7 @@ int main(void)
 		} else if (strcmp(command, "EXP") == 0) {
 			exp_planet(planets);			
 		} else if (strcmp(command, "RMV") == 0) {
-			printf("boona\n");
+			remove_shield(planets);
 		} else if (strcmp(command, "COL") == 0) {
 			printf("boona\n");
 		} else if (strcmp(command, "ROT") == 0) {
