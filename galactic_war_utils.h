@@ -1,3 +1,4 @@
+// Copyright 2020 - 2021 - 311CA - Mihai Daniel Soare
 #ifndef  GALACTIC_WAR_UTILS_H_
 #define  GALACTIC_WAR_UTILS_H_
 

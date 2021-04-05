@@ -40,9 +40,6 @@ int main(void)
 			rotate_planet(planets);
 		} else if (strcmp(command, "SHW") == 0) {
 			show_planet(planets);
-		} else if (strcmp(command, "EXT") == 0) {
-			destroy_galaxy(&planets);
-			break;
 		}
 	}
 	destroy_galaxy(&planets);
