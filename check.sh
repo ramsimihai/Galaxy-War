@@ -169,4 +169,4 @@ checkBonus
 printBonus
 
 make clean &> /dev/null
-rm -rf out
+#rm -rf out

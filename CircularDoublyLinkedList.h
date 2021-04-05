@@ -1,11 +1,10 @@
-#ifndef __CIRCULAR_DOUBLY_LINKED_LIST_H_
-#define __CIRCULAR_DOUBLY_LINKED_LIST_H_
+#ifndef CIRCULARDOUBLYLINKEDLIST_H_
+#define CIRCULARDOUBLYLINKEDLIST_H_
 
 typedef struct dll_node_t dll_node_t;
 struct dll_node_t
 {
-	void *data; /* Pentru ca datele stocate sa poata avea orice tip, folosim un
-				   pointer la void. */
+	void *data;
 	dll_node_t *prev, *next;
 };
 
@@ -16,11 +15,6 @@ struct doubly_linked_list_t
 	unsigned int data_size;
 	unsigned int size;
 };
-
-/*
- * Acestea sunt functiile pe care trebuie sa le implementam.
- * Implementarea acestora se va face in LinkedList.c .
- */
 
 doubly_linked_list_t*
 dll_create(unsigned int data_size);
@@ -77,6 +71,9 @@ dll_node_t
 *dll_add_sum_of_pairs(doubly_linked_list_t *list);
 
 void
+dll_move_first(dll_node_t **head, dll_node_t *new_node);
+
+void
 dll_check_if_palindrome(doubly_linked_list_t *list);
 
 doubly_linked_list_t
@@ -84,4 +81,4 @@ doubly_linked_list_t
 
 dll_node_t *create_node(const void *new_data, uint data_size);
 
-#endif /* __CIRCULAR_DOUBLY_LINKED_LIST_H_*/
+#endif // CIRCULARDOUBLYLINKEDLIST_H_

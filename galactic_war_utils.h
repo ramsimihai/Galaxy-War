@@ -1,5 +1,5 @@
-#ifndef ___GALACTIC_WAR_UTILS_
-#define ___GALACTIC_WAR_UTILS_
+#ifndef  GALACTIC_WAR_UTILS_H_
+#define  GALACTIC_WAR_UTILS_H_
 
 #define MAX_NAME_SIZE 256
 
@@ -23,6 +23,10 @@ void exp_planet(doubly_linked_list_t *planets);
 
 void remove_shield(doubly_linked_list_t *planets);
 
+void collide_planets(doubly_linked_list_t *planets);
+
+void rotate_planet(doubly_linked_list_t *planets);
+
 void destroy_galaxy(doubly_linked_list_t **planets);
 
-#endif
+#endif  // GALACTIC_WAR_UTILS_H_
