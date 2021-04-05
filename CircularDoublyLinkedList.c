@@ -1,3 +1,4 @@
+// Copyright 2020 - 2021 - 311CA - Mihai Daniel Soare
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

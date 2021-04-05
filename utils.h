@@ -1,3 +1,4 @@
+// Copyright 2020 - 2021 - 311CA - Mihai Daniel Soare
 #ifndef UTILS_H_
 #define UTILS_H_
 
@@ -15,5 +16,4 @@
         }                                                                      \
     } while (0)
 
-
-#endif //  UTILS_H_
+#endif  //  UTILS_H_

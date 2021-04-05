@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-Wall -Wextra
+CFLAGS=-Wall -Wextra -std=c99
 DEBUG=-g -ggdb -O0 -march=native
 
 build: main

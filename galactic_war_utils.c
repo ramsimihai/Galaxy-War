@@ -1,9 +1,10 @@
+// Copyright 2020 - 2021 - 311CA - Mihai Daniel Soare
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "CircularDoublyLinkedList.h"
-#include "utils.h"
-#include "galactic_war_utils.h"
+#include "./CircularDoublyLinkedList.h"
+#include "./utils.h"
+#include "./galactic_war_utils.h"
 
 #define MAX_STRING_SIZE 256
 #define MIN_SHIELDS 4
@@ -11,7 +12,7 @@
 void add_planet(doubly_linked_list_t *planets)
 {
 	char name[MAX_STRING_SIZE];
-	int idx_planet, nr_shields;
+	uint idx_planet, nr_shields;
 	planet_t new_planet;
 	int one = 1;
 
@@ -28,8 +29,7 @@ void add_planet(doubly_linked_list_t *planets)
 	for (uint i = 0; i < nr_shields; i++)
 		dll_add_nth_node(new_planet.shields, 0, &one);
 
-
-	strcpy(new_planet.name, name);
+	memcpy(new_planet.name, name, sizeof(name));
 	new_planet.planets_killed = 0;
 
 	dll_add_nth_node(planets, idx_planet, &new_planet);
@@ -37,10 +37,11 @@ void add_planet(doubly_linked_list_t *planets)
 	fprintf(stdout, "The planet %s has joined the galaxy.\n", new_planet.name);
 }
 
-void black_hole(doubly_linked_list_t *planets) 
+void black_hole(doubly_linked_list_t *planets)
 {
 	uint index;
 	dll_node_t *removed;
+	doubly_linked_list_t *shields;
 
 	fscanf(stdin, "%d", &index);
 	if (index >= planets->size) {
@@ -49,8 +50,10 @@ void black_hole(doubly_linked_list_t *planets)
 	}
 
 	removed = dll_remove_nth_node(planets, index);
-	fprintf(stdout, "The planet %s has been eaten by the vortex.\n", ((planet_t *)removed->data)->name);
-	dll_free(&((planet_t *)removed->data)->shields);
+	fprintf(stdout, "The planet %s has been eaten by the vortex.\n",
+			((planet_t *)removed->data)->name);
+	shields = ((planet_t *)removed->data)->shields;
+	dll_free(&shields);
 	free(removed->data);
 	free(removed);
 }
@@ -73,13 +76,15 @@ void show_planet(doubly_linked_list_t *planets)
 
 	curr = dll_get_nth_node(planets, index);
 	fprintf(stdout, "NAME: %s\n", ((planet_t *)curr->data)->name);
-	
+
 	if (planets->size == 1)
 		fprintf(stdout, "CLOSEST: none\n");
 	else if (planets->size == 2)
 		fprintf(stdout, "CLOSEST: %s\n", ((planet_t *)curr->prev->data)->name);
 	else
-		fprintf(stdout, "CLOSEST: %s and %s\n", ((planet_t *)curr->prev->data)->name, ((planet_t *)curr->next->data)->name);
+		fprintf(stdout, "CLOSEST: %s and %s\n",
+				((planet_t *)curr->prev->data)->name,
+				((planet_t *)curr->next->data)->name);
 
 	fprintf(stdout, "SHIELDS: ");
 	curr_shields = ((planet_t*)curr->data)->shields->head;
@@ -106,13 +111,14 @@ void upgrade_shields_of_planet(doubly_linked_list_t *planets)
 	}
 
 	curr_planet = dll_get_nth_node(planets, idx_planet);
-	
+
 	if (idx_shield >= ((planet_t *)curr_planet->data)->shields->size) {
 		printf("Shield out of bounds!\n");
 		return;
 	}
 
-	curr_shield = dll_get_nth_node(((planet_t *) curr_planet->data)->shields, idx_shield);
+	curr_shield = dll_get_nth_node(((planet_t *)curr_planet->data)->shields,
+									idx_shield);
 
 	*(int *)curr_shield->data += upgrade_value;
 }
@@ -162,7 +168,8 @@ void remove_shield(doubly_linked_list_t *planets)
 		return;
 	}
 
-	curr_shield = dll_get_nth_node(((planet_t *) curr_planet->data)->shields, idx_shield);
+	curr_shield = dll_get_nth_node(((planet_t *) curr_planet->data)->shields,
+									idx_shield);
 
 	if (idx_shield >= ((planet_t *) curr_planet->data)->shields->size) {
 		fprintf(stdout, "Shield out of bounds!\n");
@@ -171,29 +178,25 @@ void remove_shield(doubly_linked_list_t *planets)
 
 	if (((planet_t *) curr_planet->data)->shields->size <= MIN_SHIELDS) {
 		fprintf(stdout, "A planet cannot have less than 4 shields!\n");
-		return ;
+		return;
 	}
 
-	curr_shield = dll_remove_nth_node(((planet_t *) curr_planet->data)->shields, idx_shield);
+	curr_shield = dll_remove_nth_node(((planet_t *)curr_planet->data)->shields,
+									  idx_shield);
 	free(curr_shield->data);
 	free(curr_shield);
 }
 
-static void destroy_planet(dll_node_t *planet)
+static void destroy_planet(doubly_linked_list_t *planets, uint idx_planet)
 {
-	if (!planet)
+	if (!planets)
 		return;
 
-	dll_free(&((planet_t *)planet->data)->shields);
-
-	dll_node_t *rem, *prev;
-	rem = planet;
-	prev = planet->prev;
-	planet->next->prev = prev;
-	prev->next = planet->next;
-	
-	free(rem->data);
-	free(rem);
+	dll_node_t *removed = dll_remove_nth_node(planets, idx_planet);
+	doubly_linked_list_t *shields = ((planet_t *)removed->data)->shields;
+	dll_free(&shields);
+	free(removed->data);
+	free(removed);
 }
 
 void collide_planets(doubly_linked_list_t *planets)
@@ -202,7 +205,7 @@ void collide_planets(doubly_linked_list_t *planets)
 	dll_node_t *first_planet, *second_planet;
 	dll_node_t *first_shield, *second_shield;
 	int one = 1;
-	
+
 	fscanf(stdin, "%d%d", &idx_first_planet, &idx_second_planet);
 
 	if (idx_first_planet >= planets->size || idx_second_planet >= planets->size) {
@@ -213,34 +216,30 @@ void collide_planets(doubly_linked_list_t *planets)
 	first_planet = dll_get_nth_node(planets, idx_first_planet);
 	second_planet = dll_get_nth_node(planets, idx_second_planet);
 
-	first_shield = dll_get_nth_node(((planet_t *)first_planet->data)->shields, 
+	first_shield = dll_get_nth_node(((planet_t *)first_planet->data)->shields,
 									((planet_t *)first_planet->data)->shields->size / 4);
-	second_shield = dll_get_nth_node(((planet_t *)second_planet->data)->shields, 
+	second_shield = dll_get_nth_node(((planet_t *)second_planet->data)->shields,
 										((planet_t *)second_planet->data)->shields->size / 4 * 3);
 
 	if (*(int *)first_shield->data == 0) {
-		fprintf(stdout, "The planet %s has imploded.\n", ((planet_t *)first_planet->data)->name);
-		
-		dll_node_t *removed = dll_remove_nth_node(planets, idx_first_planet);
+		fprintf(stdout, "The planet %s has imploded.\n",
+				((planet_t *)first_planet->data)->name);
+
+		destroy_planet(planets, idx_first_planet);
+
 		idx_second_planet = idx_first_planet;
-		dll_free(&((planet_t *)removed->data)->shields);
-		free(removed->data);
-		free(removed);
 
 		((planet_t *)second_planet->data)->planets_killed++;
-
 
 	} else {
 		*(int *)first_shield->data -= one;
 	}
 
 	if (*(int *)second_shield->data == 0) {
-		fprintf(stdout, "The planet %s has imploded.\n", ((planet_t *)second_planet->data)->name);
-		
-		dll_node_t *removed = dll_remove_nth_node(planets, idx_second_planet);
-		dll_free(&((planet_t *)removed->data)->shields);
-		free(removed->data);
-		free(removed);
+		fprintf(stdout, "The planet %s has imploded.\n",
+				((planet_t *)second_planet->data)->name);
+
+		destroy_planet(planets, idx_second_planet);
 
 		if (idx_second_planet != idx_first_planet)
 			((planet_t *)first_planet->data)->planets_killed++;
@@ -248,7 +247,6 @@ void collide_planets(doubly_linked_list_t *planets)
 	} else {
 		*(int *)second_shield->data -= one;
 	}
-
 }
 
 void destroy_galaxy(doubly_linked_list_t **planets)
@@ -258,11 +256,13 @@ void destroy_galaxy(doubly_linked_list_t **planets)
 	if (!planets)
 		return;
 
-	for (int i = 0; i < (*planets)->size; i++) {
-		dll_free(&((planet_t *)node->data)->shields);
+	for (uint i = 0; i < (*planets)->size; i++) {
+		doubly_linked_list_t *shields;
+		shields = ((planet_t *)node->data)->shields;
+		dll_free(&shields);
 		node = node->next;
 	}
-	
+
 	dll_free(planets);
 	*planets = NULL;
 }
